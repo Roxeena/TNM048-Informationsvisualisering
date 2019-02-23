@@ -1,37 +1,38 @@
 
 //Parse the data for every row in the table
-function parseData(path)
+function parseData(rawData)
 {
 	//To hold the data
 	var data = [];	
 
-	d3.csv(path,function(row)
+	for(var i = 0; i < rawData.length; ++i)
 	{
 		//array for the items in the columns and a counter to know if string of number
 		var dims = [];
-		var count = 0;
 
-		//For all items in the row
-		for(var i in row)
+		//For all items in the row (columns)
+		for(var j in rawData[i])
 		{
-			//Columns with numerical values, how to make automatic?
-			if(count == 1 || count == 2)
+			//Columns with numerical values, convert to float if possible
+			if( parseFloat(rawData[i][j]) > 0.0001 )
 			{
-				//Check for NaN, if NaN then push 0
-				if(parseFloat(row[i]) > 0.001)
-					dims.push(parseFloat(row[i]));
-				else
-					dims.push(0);
+				dims.push(parseFloat(rawData[i][j]));
 			}
-			//Columns with string value
+			//Check for NaN or empty slots, then push 0
+			else if( !(rawData[i][j] === rawData[i][j]) || rawData[i][j] == "" || rawData[i][j] == "N/A")
+			{
+				dims.push(0);
+			}
+			//Columns with string value, push as they are
 			else
-				dims.push(row[i]);
+			{
+				dims.push(rawData[i][j]);
+			}
 			
-			++count;
 		}
 		//Add this row to the data
 		data.push(dims);
-	});
+	}
 
 	return data;
 }
