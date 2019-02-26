@@ -11,8 +11,6 @@ function draw(error, data){
         console.log(error);
         throw error;
     }
- 
-  var newData = parseData(data);
 
-  parrallelCords(newData);
+  parrallelCords(data);
 }
