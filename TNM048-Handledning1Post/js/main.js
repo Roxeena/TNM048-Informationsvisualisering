@@ -1,7 +1,7 @@
 
 
 queue()
-  .defer(d3.csv,'./data/videogamesales.csv')
+  .defer(d3.csv,'./data/test.csv')
   .await(draw);
 
 var pc;

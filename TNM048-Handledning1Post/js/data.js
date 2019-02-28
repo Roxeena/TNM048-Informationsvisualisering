@@ -3,9 +3,7 @@
 function parseData(rawData)
 {
 	//To hold the data
-    var data = [];
-    var dimensions = d3.keys(rawData[0]);
-    //console.log(dimensions);
+	var data = [];	
 
 	for(var i = 0; i < rawData.length; ++i)
 	{
@@ -14,28 +12,24 @@ function parseData(rawData)
 
 		//For all items in the row (columns)
 		for(var j in rawData[i])
-        {
-            if (j == "Name" || j == "Publisher" || j == "Developer")
-            {
-                //console.log("skip!");
-                continue;
-            }
-            
-            //Columns with numerical values, convert to float if possible
+		{
+			//Skip the columns with Names, developers and publishers, too clutterd
+			if(j == "Name")
+			{
+				//console.log("skip!");
+				continue;
+			}
+
+			//Columns with numerical values, convert to float if possible
 			if( parseFloat(rawData[i][j]) > 0.0001 )
 			{
 				dims.push(parseFloat(rawData[i][j]));
 			}
 			//Check for NaN or empty slots, then push 0
-            else if (!(rawData[i][j] === rawData[i][j]) || rawData[i][j] == "" || rawData[i][j] == "0")
+			else if( !(rawData[i][j] === rawData[i][j]) || rawData[i][j] == "" || rawData[i][j] == "N/A")
 			{
 				dims.push(0);
 			}
-            //If no year specified use 1970
-            else if(rawData[i][j] == "N/A")
-            {
-                dims.push(1970);
-            }
 			//Columns with string value, push as they are
 			else
 			{
