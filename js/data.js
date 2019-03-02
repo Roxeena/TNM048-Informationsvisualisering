@@ -15,12 +15,6 @@ function parseData(rawData)
 		//For all items in the row (columns)
 		for(var j in rawData[i])
         {
-            if (j == "Name" || j == "Publisher" || j == "Developer")
-            {
-                //console.log("skip!");
-                continue;
-            }
-            
             //Columns with numerical values, convert to float if possible
 			if( parseFloat(rawData[i][j]) > 0.0001 )
 			{

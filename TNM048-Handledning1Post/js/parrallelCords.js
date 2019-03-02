@@ -3,6 +3,8 @@ function parrallelCords(rawData)
 {
 	var data = parseData(rawData);
     var transposed = transpose(data);
+    var rawDimensions = d3.keys(rawData[0]);
+    //console.log(rawDimensions);
 
 	//console.log(data);
 	var div = d3.select("#parallel");
@@ -27,17 +29,17 @@ function parrallelCords(rawData)
 	var dimensions = [
 		{
 			name: "Sales",
-			scale: d3.scaleLinear().domain(d3.extent(transposed[0])).range([height, 0]).nice(),
-			type: "number"
-		},
-		{
-			name: "Score",
 			scale: d3.scaleLinear().domain(d3.extent(transposed[1])).range([height, 0]).nice(),
 			type: "number"
 		},
 		{
+			name: "Score",
+			scale: d3.scaleLinear().domain(d3.extent(transposed[2])).range([height, 0]).nice(),
+			type: "number"
+		},
+		{
             name: "Genre",
-            scale: d3.scalePoint().domain(transposed[2].sort(d3.ascending)).range([height, 0]),
+            scale: d3.scalePoint().domain(transposed[3].sort(d3.ascending)).range([height, 0]),
 			type: "string"
 		}
 	];
@@ -71,32 +73,7 @@ function parrallelCords(rawData)
 			.data(dimensions)
 			.enter().append("g")
 			.attr("class", "dimension")
-			.attr("transform", function (d) { return "translate(" + xScale(d.name) + ")"; })
-			.call(d3.drag()
-				.on("start", function(d) {
-					dragging[d] = xScale(d.name);
-					background.attr("visibility", "hidden");
-				})
-				.on("drag", function(d) {
-					dragging[d] = Math.min(width, Math.max(0, d3.event.x));
-					foreground.attr("d", path);
-					dimensions.sort(function(a, b) { return dragging[a] - xScale(b.name); });
-					xScale.domain(updateDimensionDomain());
-					d3.select(this).attr("transform", function(d) { return "translate(" + position(d) + ")"; })
-				})
-				.on("end", function(d) {
-					delete dragging[d];
-					transition(d3.select(this))
-					.attr("transform", function(p) { console.log(p); return "translate(" + xScale(d.name) + ")"; } );
-					transition(foreground)
-					.attr("d", path);
-					background
-					.attr("d", path)
-					.transition()
-					.delay(500)
-					.duration(1000)
-					.attr("visibility", null);
-				}));
+			.attr("transform", function (d) { return "translate(" + xScale(d.name) + ")"; });
 		
 		// Add an axis and title.
 		g.append("g")
@@ -122,13 +99,62 @@ function parrallelCords(rawData)
             .selectAll("rect")
             .attr("x", -8)
             .attr("width", 10);
+
+        //Mouse functions
+        var projection = svg.selectAll(".background path,.foreground path")
+        	.on("click", mouseClick)
+        	.on("mouseover", mouseOver)
+        	.on("mouseout", mouseOut);
+	    //mouseOver(selected_line);
+	    //mouseOut(selected_line);
+
+	    var selected_lines = g.selectAll("line");
+	    circleDiagram(selected_lines);
 	}
 
+	//Mouse over function
+    function mouseOver(selected_line){    
+        tooltip(selected_line);
+    }
 
-	function position(d) {
-		var v = dragging[d];
-		return v == null ? xScale(d.name) : v;
+    //Mouse out function
+    function mouseOut(selected_line){    
+        
 	}
+
+	//Mouse click function
+	function mouseClick(selected_line){  
+		console.log(selected_line);  
+		//Hightlight this line and make it stay hightlighted until user clicks somewhere eles
+    }
+
+	function tooltip(d)
+    {
+    	//Helper function for including information tool_tip
+        // Defining tooltip for hovering points
+        var tooltip = d3.select("#tooltip");
+        tooltip
+            .select("#name")
+            .text("Name: " + d[0]);
+
+        tooltip
+            .select("#sales")
+            .text("Sales: " + d[1]);
+
+        if (d[2] == 0) {
+            tooltip
+                .select("#score")
+                .text("Score: No entry");
+        } else {
+            tooltip
+                .select("#score")
+                .text("Score: " + d[2]);
+        }
+        tooltip
+            .select("#genre")
+            .text("Genre: " + d[3])
+            ;
+    }
 
 	function transition(g) {
 		return g.transition().duration(500);
@@ -167,21 +193,26 @@ function parrallelCords(rawData)
                 return within(d[findDimIndex(dim)], ext, dim);
             }) ? null : "none";
         });
-
-        function within(d, extent, dim) {
-            return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1];
-        };
-
+        
     }
+
+    function within(d, extent, dim) {
+        return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1];
+    };
 
     function findDimIndex(dim)
     {
-    	
+    	//for all the dimensions in axes
     	for(var i = 0; i < dimensions.length; ++i)
     	{
-    		if(dimensions[i].name == dim.name)
+    		//for all the dimensions in the data
+    		for(var j = 0; j < rawDimensions.length; ++j)
     		{
-    			return i;
+	    		//Compare 
+	    		if(rawDimensions[j] == dim.name)
+	    		{
+	    			return j;
+	    		}
     		}
     	}
     	console.log("Could not find dimension!");

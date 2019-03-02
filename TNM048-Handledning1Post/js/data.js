@@ -14,11 +14,11 @@ function parseData(rawData)
 		for(var j in rawData[i])
 		{
 			//Skip the columns with Names, developers and publishers, too clutterd
-			if(j == "Name")
+			/*if(j == "Name")
 			{
 				//console.log("skip!");
 				continue;
-			}
+			}*/
 
 			//Columns with numerical values, convert to float if possible
 			if( parseFloat(rawData[i][j]) > 0.0001 )

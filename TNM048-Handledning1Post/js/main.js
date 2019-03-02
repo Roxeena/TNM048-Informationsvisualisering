@@ -13,4 +13,5 @@ function draw(error, data){
     }
 
   parrallelCords(data);
+  
 }
