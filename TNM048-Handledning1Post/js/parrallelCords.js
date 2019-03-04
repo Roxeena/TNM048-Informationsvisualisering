@@ -101,15 +101,14 @@ function parrallelCords(rawData)
             .attr("width", 10);
 
         //Mouse functions
-        var projection = svg.selectAll(".background path,.foreground path")
+        var projection = svg.selectAll(".foreground path")
         	.on("click", mouseClick)
         	.on("mouseover", mouseOver)
         	.on("mouseout", mouseOut);
 	    //mouseOver(selected_line);
 	    //mouseOut(selected_line);
 
-	    var selected_lines = g.selectAll("line");
-	    circleDiagram(selected_lines);
+	    var selected_lines = g.selectAll(".foreground path");
 	}
 
 	//Mouse over function
@@ -187,7 +186,7 @@ function parrallelCords(rawData)
             });
 
         foreground.style("display", function (d) {
-            return actives.every(function (active) {
+            return  actives.every(function (active) {
                 var dim = active.dimension;
                 var ext = active.extent;
                 return within(d[findDimIndex(dim)], ext, dim);

@@ -13,5 +13,6 @@ function draw(error, data){
     }
 
   parrallelCords(data);
+  circleDiagram(data);
   
 }

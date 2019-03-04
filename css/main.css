@@ -49,12 +49,12 @@
 }
 
 .brushed {
-    stroke: #8e1b54;
-    opacity: 1.0;
+  stroke: #8e1b54;
+  opacity: 1.0;
 }
 
 .non_brushed {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 svg {
@@ -81,27 +81,32 @@ svg {
 }
 
 #tooltip, #color-info{
-        height: 570px;
-        background-color: white;
-        -webkit-border-radius: 10px;
-        -moz-border-radius: 10px;
-        border-radius: 10px;
-        -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-        -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-        pointer-events: none;
-        opacity: 0.8;
+  height: 570px;
+  background-color: white;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  opacity: 0.8;
 }
 
 #tooltip p {
-    margin: 0;
-    font-family: sans-serif;
-    font-size: 14px;
-    line-height: 30px;
+  margin: 0;
+  font-family: sans-serif;
+  font-size: 14px;
+  line-height: 30px;
 }
 
 #tooltip, #color-info{
-    margin-top: 20px;
-    position: relative;
-    width: auto;
+  margin-top: 20px;
+  position: relative;
+  width: auto;
+}
+
+.shadow {
+  -webkit-filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.5) );
+  filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.5) );
 }

@@ -71,3 +71,39 @@ function transpose(data) {
     //console.log(transposed);
     return transposed;
 }
+
+function extractSalesData(data)
+{
+    var sales = [
+        { 
+            name: "NA sales",
+            value: 0
+        }, 
+        { 
+            name: "EU sales",
+            value: 0
+        }, 
+        { 
+            name: "JP sales",
+            value: 0
+        }, 
+        { 
+            name: "Other sales",
+            value: 0
+        }
+    ];
+
+    //For every item
+    for(var i = 0; i < data.length; ++i)
+    {
+        //For every value
+        for(var j in data[i])
+        {
+            //console.log(j);
+            //Only count sales
+            if(j < 9 && j > 4)
+                sales[j - 5].value += data[i][j];
+        }
+    }
+    return sales;
+}

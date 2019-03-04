@@ -153,7 +153,7 @@ function parrallelCords(rawData)
             .attr("width", 10);
 
         //Mouse functions
-        svg.selectAll(".background path,.foreground path")
+        svg.selectAll(".foreground path")
             .on("click", mouseClick)
             .on("mouseover", mouseOver)
             .on("mouseout", mouseOut);
