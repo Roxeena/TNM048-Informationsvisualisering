@@ -81,7 +81,7 @@ svg {
 }
 
 #tooltip, #color-info{
-  height: 570px;
+  height: 600px;
   background-color: white;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;

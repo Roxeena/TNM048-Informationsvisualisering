@@ -72,7 +72,7 @@ function transpose(data) {
     return transposed;
 }
 
-function extractSalesData(data)
+function extractSalesData(data, allData)
 {
     var sales = [
         { 
@@ -93,17 +93,29 @@ function extractSalesData(data)
         }
     ];
 
-    //For every item
-    for(var i = 0; i < data.length; ++i)
+    
+    //Is the sent in data more than one line?
+    if(allData)
     {
-        //For every value
-        for(var j in data[i])
+        for(var i = 0; i < data.length; ++i)
         {
-            //console.log(j);
-            //Only count sales
-            if(j < 9 && j > 4)
-                sales[j - 5].value += data[i][j];
+            //For every value
+            for(var j in data[i])
+            {
+                //Only count sales
+                if(j < 9 && j > 4)
+                    sales[j - 5].value += data[i][j];
+            }
         }
     }
+    else
+    {
+       //For every sales
+        for(var i = 5; i < 9; ++i)
+        {
+            sales[i - 5].value += data[i];
+        } 
+    }
+    
     return sales;
 }

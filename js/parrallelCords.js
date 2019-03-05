@@ -10,7 +10,7 @@ function parrallelCords(rawData)
 	var parentWidth = $("#parallel").parent().width();
 	var margin = {top: 40, right: 30, bottom: 10, left: 60};
 	var width = parentWidth - margin.left - margin.right;
-	var height = 500 - margin.top - margin.bottom;
+	var height = 450 - margin.top - margin.bottom;
 
 	var line = d3.line(); 
 	var foreground;
@@ -169,6 +169,7 @@ function parrallelCords(rawData)
     //Mouse over function
     function mouseOver(selected_line){    
         tooltip(selected_line);
+        update(selected_line);
     }
 
     //Mouse out function
@@ -180,6 +181,7 @@ function parrallelCords(rawData)
     function mouseClick(selected_line){  
         console.log(selected_line);  
         //Hightlight this line and make it stay hightlighted until user clicks somewhere eles
+
     }
 
     function tooltip(d)
