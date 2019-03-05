@@ -57,22 +57,6 @@ function circleDiagram(rawData)
         .duration(2000)
         .attrTween("d", pieTween);
 
-    g.append("text")
-    	.attr("class", "label")
-        .transition()
-        .ease(d3.easeLinear)
-        .duration(2000)
-        .attr("transform", function(d) { 
-            return "translate(" + arc.centroid(d) + ")";
-         })
-        .attr("dy", ".35em")
-        .attr("text-anchor", "middle")
-        .text(function(d) { 
-            return formatDecimals(d.data.value) + "%"; ; 
-        })
-        .style("fill", "white")
-        .style("font-size", "10px");
-
     var legendRectSize = 30;
     var legendSpacing = 15;
     var legendHeight = legendRectSize+legendSpacing;
@@ -98,10 +82,11 @@ function circleDiagram(rawData)
         .style("stroke", function(d, i) { return color(i); });
  
     legend.append('text')
+    	.attr("class", "label")
         .attr("x", 40)
         .attr("y", 20)
         .text(function(d){
-            return d.name;
+            return d.name + ": " + formatDecimals(d.value);
         })
         .style("fill", "black")
         .style("font-size", "14px");
@@ -109,51 +94,50 @@ function circleDiagram(rawData)
 }
 
 function pieTween(b) {
-        b.innerRadius = 0;
-        var inter = d3.interpolate({startAngle: 0, endAngle: 0}, b);
-        return function(t) { return arc(inter(t)); };
-    }
+    b.innerRadius = 0;
+    var inter = d3.interpolate({startAngle: 0, endAngle: 0}, b);
+    return function(t) { return arc(inter(t)); };
+}
+
+function arcTween(a) {
+    const i = d3.interpolate(this._current, a);
+    this._current = i(1);
+    return (t) => arc(i(t));
+}
 
 function update(selected_data)
-	{
-		var data = extractSalesData(selected_data, false);
+{
+	var newData = extractSalesData(selected_data, false);
 
-		var path = svg.selectAll("path")
-	        .data(pie(data));
+	var path = svg.selectAll("path")
+        .data(pie(newData));
 
-	    // Update existing arcs
-	    path.transition()
-	    	.duration(2000)
-	    	.attrTween("d", pieTween);
+    // Update existing arcs
+    path.transition()
+    	.duration(1000)
+    	.attrTween("d", arcTween);
 
-	    // Enter new arcs
-	    path.enter().append("path")
-	        .style("fill", function(d, i) { return color(i); })
-	        .attr("d", arc)
-	        .each(function(d) { this._current = d; });
+    // Enter new arcs
+    path.enter().append("path")
+        .style("fill", function(d, i) { return color(i); })
+        .attr("d", arc)
+        .each(function(d) { this._current = d; });
 
-	    var label = svg.selectAll(".label");
+    var label = svg.select(".label")
+    	.data(pie(newData));
 
-	    //Update existing labels
-	    label.transition()
-	    	.duration(3000)
-	        .ease(d3.easeLinear);
+    console.log(label);
 
-	    //Enter new labels
-	    label.enter()
-	    	.attr("class", "label")
-	    	.attr("transform", function(d) { 
-	            return "translate(" + arc.centroid(d) + ")";
-	         })
-	        .attr("dy", ".35em")
-	        .attr("text-anchor", "middle")
-	        .text(function(d) { 
-	            console.log(d);
-	            return formatDecimals(d.data.value) + "%"; 
-	        })
-	        .style("fill", "white")
-	        .style("font-size", "10px");
-	}
+    //Enter new labels
+    label.attr("x", 40)
+        .attr("y", 20)
+        .text(function(d){
+            return d.name + ": " + formatDecimals(d.value);
+        })
+        .style("fill", "black")
+        .style("font-size", "14px");
+}
+
 
 
 
