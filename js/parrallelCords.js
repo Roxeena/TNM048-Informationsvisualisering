@@ -203,6 +203,7 @@ function parrallelCords(rawData)
     function mouseOver(selected_line){    
         tooltip(selected_line);
         update(selected_line);
+        foreground.style("display", selected_line);
     }
 
     //Mouse out function

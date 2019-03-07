@@ -8,6 +8,7 @@ function circleDiagram(rawData)
 {
     var originalData = parseData(rawData)
     var data = extractSalesData(originalData, true);
+    var totalSales = extractTotalSales(originalData, true);
 
     var div = d3.select("#pie");
 	var parentWidth = $("#pie").parent().width();
@@ -86,8 +87,7 @@ function circleDiagram(rawData)
         .attr("x", 40)
         .attr("y", 20)
         .text(function(d){
-            console.log(d);
-            return d.name + ": " + formatDecimals(d.value);
+            return d.name + ": " + formatDecimals((d.value/totalSales)*100) + "%";
         })
         .style("fill", "black")
         .style("font-size", "14px");
@@ -109,6 +109,7 @@ function arcTween(a) {
 function update(selected_data)
 {
 	var newData = extractSalesData(selected_data, false);
+    var totalSales = extractTotalSales(selected_data, false);
 
 	var path = svg.selectAll("path")
         .data(pie(newData));
@@ -124,17 +125,15 @@ function update(selected_data)
         .attr("d", arc)
         .each(function(d) { this._current = d; });
 
-    var label = svg.select(".label")
+    var label = svg.selectAll(".label")
     	.data(pie(newData));
 
     //Enter new labels
-    label.append('text')
-        .attr("class", "label")
+    label.attr("class", "label")
         .attr("x", 40)
         .attr("y", 20)
         .text(function(d){
-            console.log(d);
-            return d.data.name + ": " + formatDecimals(d.data.value);
+            return d.data.name + ": " + formatDecimals((d.data.value/totalSales)*100) + "%";
         })
         .style("fill", "black")
         .style("font-size", "14px");

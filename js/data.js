@@ -119,3 +119,28 @@ function extractSalesData(data, allData)
     
     return sales;
 }
+
+function extractTotalSales(data, allData)
+{
+    var total = 0;
+    //Is the sent in data more than one line?
+    if(allData)
+    {
+        for(var i = 0; i < data.length; ++i)
+        {
+            //For every value
+            for(var j in data[i])
+            {
+                //Only count global sales
+                if(j == 9)
+                    total += data[i][j];
+            }
+        }
+    }
+    else
+    {
+       total = data[9];
+    }
+    
+    return total;
+}
