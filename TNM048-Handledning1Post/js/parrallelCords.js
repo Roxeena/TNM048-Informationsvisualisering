@@ -10,7 +10,7 @@ function parrallelCords(rawData)
 	var div = d3.select("#parallel");
 	//console.log(div.node().parentNode);
 	var parentWidth = $("#parallel").parent().width();
-	var margin = {top: 40, right: 30, bottom: 10, left: 200};
+	var margin = {top: 40, right: 30, bottom: 10, left: 30};
 	var width = parentWidth - margin.left - margin.right;
 	var height = 400 - margin.top - margin.bottom;
 
@@ -44,9 +44,9 @@ function parrallelCords(rawData)
 		}
 	];
 
-	var xScale = d3.scaleBand()
+	var xScale = d3.scalePoint()
 		.domain( updateDimensionDomain())
-		.range([0, width]);
+		.rangeRound([0, width]).padding(0.2);
 
 	plot(data);
 
@@ -73,14 +73,40 @@ function parrallelCords(rawData)
 			.data(dimensions)
 			.enter().append("g")
 			.attr("class", "dimension")
-			.attr("transform", function (d) { return "translate(" + xScale(d.name) + ")"; });
+			.attr("transform", function (d) { return "translate(" + xScale(d.name) + ")"; })
+            .call(d3.drag()
+                .subject(function(d) { return {x: xScale(d.name)}; })
+                .on("start", function(d) {
+                    dragging[d.name] = xScale(d.name);
+                    background.attr("visibility", "hidden");
+                })
+                .on("drag", function(d) {
+                    dragging[d.name] = Math.min(width, Math.max(0, d3.event.x));
+                    foreground.attr("d", path);
+                    dimensions.sort(function(a, b) { return position(a.name) - position(b.name); });
+                    xScale.domain(updateDimensionDomain());
+                    g.attr("transform", function(d) { 
+                        return "translate(" + position(d.name) + ")"; 
+                    })
+                })
+                .on("end", function(d) {
+                    delete dragging[d.name];
+                    transition(d3.select(this)).attr(
+                        "transform", "translate(" + xScale(d.name) + ")" );
+                    transition(foreground).attr("d", path);
+                    background.attr("d", path)
+                        .transition()
+                        .delay(500)
+                        .duration(0)
+                        .attr("visibility", null);
+                }));
 		
 		// Add an axis and title.
 		g.append("g")
 			.attr("class", "axis")
 			.each(function (d) { d3.select(this).call(d3.axisLeft(d.scale)); })
 			.append("text")
-			.attr("text-anchor", "start")
+			.attr("text-anchor", "middle")
 			.attr("y", -9)
 			.style('fill', 'black')
 			.text(function (d) { return d.name; });
@@ -111,9 +137,18 @@ function parrallelCords(rawData)
 	    var selected_lines = g.selectAll(".foreground path");
 	}
 
+    function position(d) {
+      var v = dragging[d];
+      return v == null ? xScale(d) : v;
+    }
+
+    function transition(g) {
+      return g.transition().duration(500);
+    }
+
 	//Mouse over function
-    function mouseOver(selected_line){    
-        tooltip(selected_line);
+    function mouseOver(selected_line){  
+        tooltip(selected_line);  
     }
 
     //Mouse out function
@@ -123,7 +158,6 @@ function parrallelCords(rawData)
 
 	//Mouse click function
 	function mouseClick(selected_line){  
-		console.log(selected_line);  
 		//Hightlight this line and make it stay hightlighted until user clicks somewhere eles
     }
 
@@ -151,8 +185,7 @@ function parrallelCords(rawData)
         }
         tooltip
             .select("#genre")
-            .text("Genre: " + d[3])
-            ;
+            .text("Genre: " + d[3]);
     }
 
 	function transition(g) {
@@ -162,7 +195,7 @@ function parrallelCords(rawData)
 	// Returns the path for a given data point.
     function path(d) {
         return line(dimensions.map(function (p) { 
-            return [xScale(p.name), p.scale(d[findDimIndex(p)])];
+            return [position(p.name), p.scale(d[findDimIndex(p)])];
 		}));
 	}
 

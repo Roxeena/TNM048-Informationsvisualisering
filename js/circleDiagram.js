@@ -86,6 +86,7 @@ function circleDiagram(rawData)
         .attr("x", 40)
         .attr("y", 20)
         .text(function(d){
+            console.log(d);
             return d.name + ": " + formatDecimals(d.value);
         })
         .style("fill", "black")
@@ -126,13 +127,14 @@ function update(selected_data)
     var label = svg.select(".label")
     	.data(pie(newData));
 
-    console.log(label);
-
     //Enter new labels
-    label.attr("x", 40)
+    label.append('text')
+        .attr("class", "label")
+        .attr("x", 40)
         .attr("y", 20)
         .text(function(d){
-            return d.name + ": " + formatDecimals(d.value);
+            console.log(d);
+            return d.data.name + ": " + formatDecimals(d.data.value);
         })
         .style("fill", "black")
         .style("font-size", "14px");

@@ -2,7 +2,6 @@
 function circleDiagram(rawData)
 {
     var data = parseData(rawData);
-    console.log(data);
 
     var div = d3.select("#pie");
 	var parentWidth = $("#pie").parent().width();
@@ -64,7 +63,6 @@ function circleDiagram(rawData)
          })
         .attr("dy", ".35em")
         .text(function(d) { 
-            console.log(d);
             return formatDecimals(d.value) + "%"; ; 
         });
 
