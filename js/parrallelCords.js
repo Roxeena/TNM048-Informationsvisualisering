@@ -17,6 +17,10 @@ function parrallelCords(rawData)
 	var background;
     var dragging = {};
 
+    var GenreColors = colorbrewer.Paired[12];
+    var genres = ["0", "Strategy", "Sports", "Simulation", "Shooter", "Role-Playing", "Racing", 
+        "Puzzle", "Platform", "Misc", "Fighting", "Adventure", "Action"];
+
 	//Select the div and append our svg tag.
 	var svg = div.append("svg")
 		.attr("width", width + margin.left + margin.right)
@@ -115,7 +119,11 @@ function parrallelCords(rawData)
 			.data(data)
 			.enter().append("path")
             .attr("d", path)
-            .style("stroke", "red");
+            .style("stroke", function(d) {
+                if(d[3] == 0)
+                    return "black"
+                return GenreColors[findGenreIndex(d[3]) - 1];
+            });
 			//.style("stroke", function (d, i) {  return colors[results.assignments[i]]; });
 
 		// Add a group element for each dimension.
@@ -484,6 +492,20 @@ function parrallelCords(rawData)
             domains.push(dimensions[i].name);
         }
         return domains;
+    }
+
+    
+
+    function findGenreIndex(genre)
+    {
+        for(var i = 0; i < genres.length; ++i)
+        {
+            if(genres[i] == genre)
+            {
+                return i;
+            }
+        }
+        console.log("Could not find Genre!");
     }
 }
 

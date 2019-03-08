@@ -19,6 +19,11 @@ function parrallelCords(rawData)
 	var background;
 	var dragging = {};
 
+    var dropdown = document.getElementsByClassName("dropdown-item");
+    console.log(dropdown);
+    var ratingColors = colorbrewer.Set3[9];
+    var GenreColors = colorbrewer.Set3[12];
+
 	//Select the div and append our svg tag.
 	var svg = div.append("svg")
 		.attr("width", width + margin.left + margin.right)
@@ -65,7 +70,11 @@ function parrallelCords(rawData)
 			.data(data)
 			.enter().append("path")
             .attr("d", path)
-            .style("stroke", "red");
+            .style("stroke", function(d) {
+                console.log(d);
+                console.log(GenreColors[findGenreIndex(d[3])]);
+                return GenreColors[findGenreIndex(d[3])];
+            });
 			//.style("stroke", function (d, i) {  return colors[results.assignments[i]]; });
 
 		// Add a group element for each dimension.
@@ -258,6 +267,20 @@ function parrallelCords(rawData)
     		domains.push(dimensions[i].name);
     	}
     	return domains;
+    }
+
+    function findGenreIndex(genre)
+    {
+        for(var i = 0; i < transposed[3].length; ++i)
+        {
+            if(transposed[3][i] == genre)
+            {
+                console.log("Found genre!")
+                console.log(transposed[3][i]);
+                return i;
+            }
+        }
+        console.log("Could not find Genre!");
     }
 }
 
