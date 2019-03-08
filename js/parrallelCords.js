@@ -42,27 +42,27 @@ function parrallelCords(rawData)
         },
 		{
 			name: "NA_Sales",
-			scale: d3.scaleLinear().domain(d3.extent(transposed[5])).range([height, 0]).nice(),
+			scale: d3.scaleSqrt().domain(d3.extent(transposed[5])).range([height, 0]).nice(),
 			type: "number"
         },
         {
             name: "EU_Sales",
-            scale: d3.scaleLinear().domain(d3.extent(transposed[6])).range([height, 0]).nice(),
+            scale: d3.scaleSqrt().domain(d3.extent(transposed[6])).range([height, 0]).nice(),
             type: "number"
         },
         {
             name: "JP_Sales",
-            scale: d3.scaleLinear().domain(d3.extent(transposed[7])).range([height, 0]).nice(),
+            scale: d3.scaleSqrt().domain(d3.extent(transposed[7])).range([height, 0]).nice(),
             type: "number"
         },
         {
             name: "Other_Sales",
-            scale: d3.scaleLinear().domain(d3.extent(transposed[8])).range([height, 0]).nice(),
+            scale: d3.scaleSqrt().domain(d3.extent(transposed[8])).range([height, 0]).nice(),
             type: "number"
         },
 		{
 			name: "Global_Sales",
-			scale: d3.scaleLinear().domain(d3.extent(transposed[9])).range([height, 0]).nice(),
+			scale: d3.scaleSqrt().domain(d3.extent(transposed[9])).range([height, 0]).nice(),
 			type: "number"
         },
         {

@@ -29,7 +29,7 @@ function parrallelCords(rawData)
 	var dimensions = [
 		{
 			name: "Sales",
-			scale: d3.scaleLinear().domain(d3.extent(transposed[1])).range([height, 0]).nice(),
+			scale: d3.scaleSqrt().domain(d3.extent(transposed[1])).range([height, 0]).nice(),
 			type: "number"
 		},
 		{
