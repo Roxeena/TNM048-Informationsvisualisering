@@ -1,16 +1,18 @@
+//Authors: Malin Ejdbo and Elias Elmquist
+//File that creates the parallel coordinate system
 
 function parrallelCords(rawData)
 {
+	//Usefull variables
 	var data = parseData(rawData);
     var transposed = transpose(data);
     var rawDimensions = d3.keys(rawData[0]);
 
-    //console.log(transposed);
 	var div = d3.select("#parallel");
 	var parentWidth = $("#parallel").parent().width();
 	var margin = {top: 40, right: 30, bottom: 10, left: 30};
 	var width = parentWidth - margin.left - margin.right;
-	var height = 450 - margin.top - margin.bottom;
+	var height = 800 - margin.top - margin.bottom;
 
 	var line = d3.line(); 
 	var foreground;
@@ -28,6 +30,7 @@ function parrallelCords(rawData)
 		.append("g")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+	//Costum dimensions for the used data set. Only the dimensions used in the parallel coordinates.
 	var dimensions = [
         {
             name: "Platform",
@@ -97,15 +100,16 @@ function parrallelCords(rawData)
 		
     ];
 
-    var xScale = d3.scalePoint()
+    //The bottom axis that determine the distance between each axis.
+	var xScale = d3.scalePoint()
         .domain( updateDimensionDomain())
         .rangeRound([0, width]).padding(0.2);
-
 
 	plot(data);
 
 	function plot(results)
 	{
+		//Lines for context
 		background = svg.append("g")
 			.attr("class", "background")
 			.selectAll("path")
@@ -113,6 +117,7 @@ function parrallelCords(rawData)
 			.enter().append("path")
 			.attr("d", path);
 
+		//Lines for focus
 		foreground = svg.append("g")
 			.attr("class", "foreground")
 			.selectAll("path")
@@ -124,9 +129,8 @@ function parrallelCords(rawData)
                     return "black"
                 return GenreColors[findGenreIndex(d[3]) - 1];
             });
-			//.style("stroke", function (d, i) {  return colors[results.assignments[i]]; });
 
-		// Add a group element for each dimension.
+		//Add a group element for each dimension.
 		var g = svg.selectAll(".dimension")
 			.data(dimensions)
 			.enter().append("g")
@@ -159,7 +163,7 @@ function parrallelCords(rawData)
                         .attr("visibility", null);
                 }));
 
-		// Add an axis and title.
+		//Add an axis and title.
 		g.append("g")
 			.attr("class", "axis")
 			.each(function (d) { d3.select(this).call(d3.axisLeft(d.scale)); })
@@ -169,7 +173,7 @@ function parrallelCords(rawData)
 			.style('fill', 'black')
 			.text(function (d) { return d.name; });
 
-        // Add and store a brush for each axis.
+        //Add and store a brush for each axis.
         g.append("g")
             .attr("class", "brush")
             .each(function (d) {
@@ -191,19 +195,20 @@ function parrallelCords(rawData)
             .on("mouseout", mouseOut);
 	}
 
-	// Returns the path for a given data point.
+	//Returns the path for a given data point.
     function path(item) {
         return line(dimensions.map(function (dim) {  
             return [position(dim.name), dim.scale(item[findDimIndex(dim)])]; 
 		}));
 	}
 
-    function position(d) {
+    //Calculates the new position for an axis
+	function position(d) {
       var v = dragging[d];
       return v == null ? xScale(d) : v;
     }
 
-    function transition(g) {
+	function transition(g) {
       return g.transition().duration(500);
     }
 
@@ -214,22 +219,15 @@ function parrallelCords(rawData)
         foreground.style("display", selected_line);
     }
 
-    //Mouse out function
-    function mouseOut(selected_line){    
-        
-    }
-
     //Mouse click function
     function mouseClick(selected_line){  
-        console.log(selected_line);  
-        //Hightlight this line and make it stay hightlighted until user clicks somewhere eles
-
+        //TODO: Hightlight this line and make it stay hightlighted until user clicks somewhere eles
     }
 
     function tooltip(d)
     {
         //Helper function for including information tool_tip
-        // Defining tooltip for hovering points
+        //Defining tooltip for hovering points, if not data then display that
         var tooltip = d3.select("#tooltip");
         
         if(d[0] == 0)
@@ -284,7 +282,8 @@ function parrallelCords(rawData)
             .text("Genre: " + d[3]);
         }
 
-        tooltip
+        //If no publisher it already says unknown in the data
+		tooltip
             .select("#publisher")
             .text("Publisher: " + d[4]);
 
@@ -432,11 +431,12 @@ function parrallelCords(rawData)
         }
     }
 
-    function brushstart() {
+    //Start a brush event
+	function brushstart() {
         d3.event.sourceEvent.stopPropagation();
     }
 
-    // Handles a brush event, toggling the display of foreground lines.
+    //Handles a brush event, toggling the display of foreground lines.
     function brush() {
 
         var actives = [];
@@ -468,7 +468,7 @@ function parrallelCords(rawData)
     //Function that finds the index for a specified dimension
     function findDimIndex(dim)
     {
-        //for all the dimensions in axes
+        //For all the dimensions in axes
         for(var i = 0; i < dimensions.length; ++i)
         {
             //for all the dimensions in the data
@@ -484,23 +484,31 @@ function parrallelCords(rawData)
         console.log("Could not find dimension!");
     }
 
-    function updateDimensionDomain()
+    //Update the domain of the axis when they have been reordered by the user
+	function updateDimensionDomain()
     {
-        var domains = [];
-        for(var i = 0; i < dimensions.length; ++i)
+        //To hold result
+		var domains = [];
+        
+		//For every dimension
+		for(var i = 0; i < dimensions.length; ++i)
         {
-            domains.push(dimensions[i].name);
+            //Push the name
+			domains.push(dimensions[i].name);
         }
+		
         return domains;
     }
-
-    
-
+	
+	//Function to find the index in the genres
+	//This is used to find the correct color for each genre
     function findGenreIndex(genre)
     {
-        for(var i = 0; i < genres.length; ++i)
+        //For every genre
+		for(var i = 0; i < genres.length; ++i)
         {
-            if(genres[i] == genre)
+            //Compare
+			if(genres[i] == genre)
             {
                 return i;
             }

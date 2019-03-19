@@ -1,4 +1,5 @@
-
+//Authors: Malin Ejdbo and Elias Elmquist
+//File that creates the visualization. Gets the data and sends it to each visualization
 
 queue()
   .defer(d3.csv,'./data/videogamesales.csv')
@@ -14,5 +15,4 @@ function draw(error, data){
 
   parrallelCords(data);
   circleDiagram(data);
-  
 }

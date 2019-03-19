@@ -1,3 +1,7 @@
+//Authors: Malin Ejdbo and Elias Elmquist
+//File with data related functions. 
+//Such as parsing, transposing and extracting certain part of the data.
+
 
 //Parse the data for every row in the table
 function parseData(rawData)
@@ -5,14 +9,14 @@ function parseData(rawData)
 	//To hold the data
     var data = [];
     var dimensions = d3.keys(rawData[0]);
-    //console.log(dimensions);
 
+	//For every row
 	for(var i = 0; i < rawData.length; ++i)
 	{
-		//array for the items in the columns and a counter to know if string of number
+		//array for the items in the columns
 		var dims = [];
 
-		//For all items in the row (columns)
+		//For all items in the column
 		for(var j in rawData[i])
         {
             //Columns with numerical values, convert to float if possible
@@ -25,7 +29,7 @@ function parseData(rawData)
 			{
 				dims.push(0);
 			}
-            //If no year specified use 1970
+            //If no year specified use 1970 instead of 0
             else if(rawData[i][j] == "N/A")
             {
                 dims.push(1970);
@@ -45,9 +49,10 @@ function parseData(rawData)
 }
 
 
+//Function that transpose the data, like a matrix
 function transpose(data) {
 
-    //To hold the result, copy data to get same structure
+    //To hold the result
     var rows = data.length;
     var columns = data[0].length;
 
@@ -68,13 +73,18 @@ function transpose(data) {
             transposed[c][r] = data[r][c];
         }
     }
-    //console.log(transposed);
+	
     return transposed;
 }
 
+
+//Funciton to extract only the sales data
+//If allData is true then the input data is all the data
+//otherwise it is only one datapoint
 function extractSalesData(data, allData)
 {
-    var sales = [
+    //To hold the result
+	var sales = [
         { 
             name: "NA sales",
             value: 0
@@ -93,8 +103,6 @@ function extractSalesData(data, allData)
         }
     ];
 
-    
-    //Is the sent in data more than one line?
     if(allData)
     {
         for(var i = 0; i < data.length; ++i)
@@ -120,10 +128,15 @@ function extractSalesData(data, allData)
     return sales;
 }
 
+
+//Function to extract the total sales 
+//If allData is true then the input data is all the data
+//otherwise it is only one datapoint
 function extractTotalSales(data, allData)
 {
-    var total = 0;
-    //Is the sent in data more than one line?
+    //To hold the result
+	var total = 0;
+	
     if(allData)
     {
         for(var i = 0; i < data.length; ++i)
@@ -139,7 +152,8 @@ function extractTotalSales(data, allData)
     }
     else
     {
-       total = data[9];
+       //Return the global sales
+	   total = data[9];
     }
     
     return total;
